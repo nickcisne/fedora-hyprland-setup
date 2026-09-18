@@ -95,6 +95,18 @@ The script asks for confirmation before making changes. Reboot after it complete
 sudo reboot
 ```
 
+## Optional Source Builds
+
+After entering the desktop environment, build Ghostty and Yazi from their upstream repositories:
+
+```bash
+bash build-source-apps.sh
+```
+
+The script installs the Fedora build dependencies with `sudo`, builds both applications as the normal user, and installs them under `~/.local`. It keeps the source checkouts under `~/.local/state/fedora-hyprland-setup/sources` so the builds can be rerun and updated with fast-forward-only pulls.
+
+The Hyprland default terminal remains Kitty until its keybinding is changed deliberately.
+
 ## System Changes
 
 The installer:
@@ -124,6 +136,7 @@ fedora-hyprland-setup/
 |       |-- keybind.lua
 |       `-- startup.lua
 |-- fedora-hyprland.sh
+|-- build-source-apps.sh
 |-- LICENSE
 `-- README.md
 ```
