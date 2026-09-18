@@ -435,7 +435,9 @@ dnf install -y noctalia noctalia-greeter
 log "Configuring greetd"
 
 if [[ "$GREETD_CONFIG_EXISTS" -eq 1 ]]; then
-    warn "Skipping greetd configuration, PAM setup, and service enablement. Existing configuration was preserved."
+    warn "Skipping greetd configuration, PAM setup, and display-manager changes. Existing configuration was preserved."
+    systemctl enable greetd
+    systemctl set-default graphical.target
 else
     GREETER_USER="greeter"
     GREETER_STATE="/var/lib/noctalia-greeter"
