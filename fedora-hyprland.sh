@@ -60,7 +60,7 @@ GREETD_CONFIG_EXISTS=0
 
 if [[ -e "$GREETD_CONFIG" || -L "$GREETD_CONFIG" ]]; then
     GREETD_CONFIG_EXISTS=1
-    warn "Existing greetd configuration found at $GREETD_CONFIG. It will be left untouched."
+    warn "Existing greetd configuration found at $GREETD_CONFIG."
 fi
 
 cat <<EOF
@@ -106,6 +106,11 @@ EOF
 read -r -p "Continue? [y/N] " ANSWER
 
 case "$ANSWER" in
+    y|Y|yes|YES) ;;
+    *) echo "Aborted."; exit 0 ;;
+esac
+
+if [[ "$GREETD_CONFIG_EXISTS" -eq 1 ]]; then
     read -r -p "Overwrite the existing greetd configuration with the repository configuration? [y/N] " OVERWRITE_GREETD
 
     case "$OVERWRITE_GREETD" in
@@ -117,16 +122,9 @@ case "$ANSWER" in
             ;;
         *)
             warn "Skipping greetd configuration, PAM setup, and display-manager changes. Existing configuration was preserved."
-            systemctl enable greetd
-            systemctl set-default graphical.target
             ;;
     esac
 fi
-
-if [[ "$GREETD_CONFIG_EXISTS" -eq 0 ]]; then
-    y|Y|yes|YES) ;;
-    *) echo "Aborted."; exit 0 ;;
-esac
 
 log "Updating Fedora"
 
