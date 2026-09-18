@@ -150,27 +150,31 @@ flatpak remote-add \
 
 log "Installing Terra repository for Noctalia"
 
-TERRA_BOOTSTRAP_LOG="$(mktemp)"
-if ! dnf install -y \
-    --repofrompath "terra,https://repos.fyralabs.com/terra\$releasever" \
-    terra-release 2>&1 | tee "$TERRA_BOOTSTRAP_LOG"; then
-    if grep -Eiq 'does not have openpgp keys configured|signature verification failed' "$TERRA_BOOTSTRAP_LOG"; then
-        warn "Terra's bootstrap package does not publish a usable key to DNF yet. Retrying only terra-release without signature checking."
-        dnf install -y \
-            --nogpgcheck \
-            --repofrompath "terra,https://repos.fyralabs.com/terra\$releasever" \
-            terra-release
-    else
-        rm -f "$TERRA_BOOTSTRAP_LOG"
-        die "Terra bootstrap failed for a reason other than its initial key configuration."
+if rpm -q terra-release >/dev/null 2>&1; then
+    log "Terra release package is already installed; skipping bootstrap"
+else
+    TERRA_BOOTSTRAP_LOG="$(mktemp)"
+    if ! dnf install -y \
+        --repofrompath "terra,https://repos.fyralabs.com/terra\$releasever" \
+        terra-release 2>&1 | tee "$TERRA_BOOTSTRAP_LOG"; then
+        if grep -Eiq 'does not have openpgp keys configured|signature verification failed' "$TERRA_BOOTSTRAP_LOG"; then
+            warn "Terra's bootstrap package does not publish a usable key to DNF yet. Retrying only terra-release without signature checking."
+            dnf install -y \
+                --nogpgcheck \
+                --repofrompath "terra,https://repos.fyralabs.com/terra\$releasever" \
+                terra-release
+        else
+            rm -f "$TERRA_BOOTSTRAP_LOG"
+            die "Terra bootstrap failed for a reason other than its initial key configuration."
+        fi
     fi
+    rm -f "$TERRA_BOOTSTRAP_LOG"
 fi
-rm -f "$TERRA_BOOTSTRAP_LOG"
 
 TERRA_REPO="/etc/yum.repos.d/terra.repo"
 
 if [[ ! -f "$TERRA_REPO" ]]; then
-    die "Terra bootstrap completed without creating $TERRA_REPO."
+    die "Terra is installed, but its repository file was not found at $TERRA_REPO."
 fi
 
 if ! grep -q '^includepkgs=' "$TERRA_REPO"; then
