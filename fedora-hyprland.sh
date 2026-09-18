@@ -219,7 +219,6 @@ log "Installing graphical file-management stack"
 dnf install -y \
     thunar \
     thunar-media-tags-plugin \
-    thunar-shares-plugin \
     thunar-vcs-plugin \
     thunar-volman \
     thunar-archive-plugin \
