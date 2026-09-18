@@ -160,39 +160,10 @@ flatpak remote-add \
     flathub \
     https://dl.flathub.org/repo/flathub.flatpakrepo
 
-log "Installing Terra repository for Noctalia"
-
-if rpm -q terra-release >/dev/null 2>&1; then
-    log "Terra release package is already installed; skipping bootstrap"
-else
-    TERRA_BOOTSTRAP_LOG="$(mktemp)"
-    if ! dnf install -y \
-        --repofrompath "terra,https://repos.fyralabs.com/terra\$releasever" \
-        terra-release 2>&1 | tee "$TERRA_BOOTSTRAP_LOG"; then
-        if grep -Eiq 'does not have openpgp keys configured|signature verification failed' "$TERRA_BOOTSTRAP_LOG"; then
-            warn "Terra's bootstrap package does not publish a usable key to DNF yet. Retrying only terra-release without signature checking."
-            dnf install -y \
-                --nogpgcheck \
-                --repofrompath "terra,https://repos.fyralabs.com/terra\$releasever" \
-                terra-release
-        else
-            rm -f "$TERRA_BOOTSTRAP_LOG"
-            die "Terra bootstrap failed for a reason other than its initial key configuration."
-        fi
-    fi
-    rm -f "$TERRA_BOOTSTRAP_LOG"
-fi
-
 TERRA_REPO="/etc/yum.repos.d/terra.repo"
 
-if [[ ! -f "$TERRA_REPO" ]]; then
-    die "Terra is installed, but its repository file was not found at $TERRA_REPO."
-fi
-
-if ! grep -q '^includepkgs=' "$TERRA_REPO"; then
-    sed -i \
-        '/^\[terra\]/a includepkgs=noctalia*' \
-        "$TERRA_REPO"
+if [[ -f "$TERRA_REPO" ]]; then
+    sed -i '/^\[terra\]/,/^\[/ { s/^enabled=1$/enabled=0/; }' "$TERRA_REPO"
 fi
 
 log "Installing Hyprland desktop"
@@ -202,8 +173,6 @@ dnf install -y \
     polkit \
     accountsservice \
     greetd \
-    noctalia \
-    noctalia-greeter \
     hyprland \
     xdg-desktop-portal-hyprland \
     xdg-desktop-portal-gtk \
@@ -458,6 +427,42 @@ systemctl enable accounts-daemon
 log "Enabling SSH server"
 
 systemctl enable --now sshd
+
+log "Installing Terra repository and Noctalia"
+
+if rpm -q terra-release >/dev/null 2>&1; then
+    log "Terra release package is already installed; skipping bootstrap"
+else
+    TERRA_BOOTSTRAP_LOG="$(mktemp)"
+    if ! dnf install -y \
+        --repofrompath "terra,https://repos.fyralabs.com/terra\$releasever" \
+        terra-release 2>&1 | tee "$TERRA_BOOTSTRAP_LOG"; then
+        if grep -Eiq 'does not have openpgp keys configured|signature verification failed' "$TERRA_BOOTSTRAP_LOG"; then
+            warn "Terra's bootstrap package does not publish a usable key to DNF yet. Retrying only terra-release without signature checking."
+            dnf install -y \
+                --nogpgcheck \
+                --repofrompath "terra,https://repos.fyralabs.com/terra\$releasever" \
+                terra-release
+        else
+            rm -f "$TERRA_BOOTSTRAP_LOG"
+            die "Terra bootstrap failed for a reason other than its initial key configuration."
+        fi
+    fi
+    rm -f "$TERRA_BOOTSTRAP_LOG"
+fi
+
+if [[ ! -f "$TERRA_REPO" ]]; then
+    die "Terra is installed, but its repository file was not found at $TERRA_REPO."
+fi
+
+if ! grep -q '^includepkgs=' "$TERRA_REPO"; then
+    sed -i \
+        '/^\[terra\]/a includepkgs=noctalia*' \
+        "$TERRA_REPO"
+fi
+
+sed -i '/^\[terra\]/,/^\[/ { s/^enabled=0$/enabled=1/; }' "$TERRA_REPO"
+dnf install -y noctalia noctalia-greeter
 
 log "Configuring greetd"
 

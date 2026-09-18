@@ -102,7 +102,7 @@ The installer:
 
 1. Updates Fedora with `dnf upgrade`.
 2. Installs RPM Fusion and enables the Hyprland, nwg-shell, and Ghostty COPRs.
-3. Registers Flatpak and installs the restricted Terra repository for Noctalia Shell and Greeter.
+3. Registers Flatpak, then installs the restricted Terra repository and Noctalia Shell/Greeter near the end of the package setup.
 4. Installs the workstation packages listed above.
 5. Creates a timestamped backup of the user's existing `~/.config` directory.
 6. Copies the repository's `.config` files into the user's `~/.config` directory.
