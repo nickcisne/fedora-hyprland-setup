@@ -112,7 +112,7 @@ The installer:
 11. Enables the SSH server for inbound remote connections.
 12. Disables SDDM if it is installed, enables greetd, and sets `graphical.target` as the default boot target.
 
-The script refuses to overwrite an existing `/etc/greetd/config.toml`. It also leaves an active SDDM session running until reboot rather than stopping the display manager underneath the terminal running the installer.
+If `/etc/greetd/config.toml` already exists, the script leaves it untouched and skips greetd configuration, PAM setup, service enablement, and display-manager changes before continuing with the rest of the installation. It also leaves an active SDDM session running until reboot rather than stopping the display manager underneath the terminal running the installer.
 
 ## Repository Structure
 
@@ -180,7 +180,7 @@ Before copying repository configuration, the script creates a directory such as:
 
 The repository configuration is overlaid onto `~/.config`; files that are not present in the repository are not deleted. The script is designed primarily for a fresh installation, but the backup allows recovery if it is run on a system with existing configuration.
 
-Rerunning requires attention because the script refuses to overwrite an existing greetd configuration. This is deliberate: an existing login-manager configuration is treated as user-owned state.
+Rerunning is supported. If an existing greetd configuration is found, it is treated as user-owned state and preserved; the script skips greetd setup while continuing with other installation steps.
 
 ## Security Notes
 

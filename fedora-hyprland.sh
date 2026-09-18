@@ -55,9 +55,11 @@ if [[ ! -d "$SCRIPT_DIR/.config/hypr" ]]; then
 fi
 
 GREETD_CONFIG="/etc/greetd/config.toml"
+GREETD_CONFIG_EXISTS=0
 
 if [[ -e "$GREETD_CONFIG" || -L "$GREETD_CONFIG" ]]; then
-    die "Existing greetd configuration found at $GREETD_CONFIG. Refusing to overwrite it."
+    GREETD_CONFIG_EXISTS=1
+    warn "Existing greetd configuration found at $GREETD_CONFIG. It will be left untouched."
 fi
 
 cat <<EOF
@@ -454,33 +456,36 @@ systemctl enable --now sshd
 
 log "Configuring greetd"
 
-GREETER_USER="greeter"
-GREETER_STATE="/var/lib/noctalia-greeter"
+if [[ "$GREETD_CONFIG_EXISTS" -eq 1 ]]; then
+    warn "Skipping greetd configuration, PAM setup, and service enablement. Existing configuration was preserved."
+else
+    GREETER_USER="greeter"
+    GREETER_STATE="/var/lib/noctalia-greeter"
 
-if ! id -u "$GREETER_USER" >/dev/null 2>&1; then
-    useradd \
-        --system \
-        --shell /usr/sbin/nologin \
-        --home-dir "$GREETER_STATE" \
-        "$GREETER_USER"
-fi
+    if ! id -u "$GREETER_USER" >/dev/null 2>&1; then
+        useradd \
+            --system \
+            --shell /usr/sbin/nologin \
+            --home-dir "$GREETER_STATE" \
+            "$GREETER_USER"
+    fi
 
-mkdir -p "$GREETER_STATE"
+    mkdir -p "$GREETER_STATE"
 
-chown \
-    -R \
-    "$GREETER_USER:$GREETER_USER" \
-    "$GREETER_STATE"
+    chown \
+        -R \
+        "$GREETER_USER:$GREETER_USER" \
+        "$GREETER_STATE"
 
-NOCTALIA_SESSION="$(command -v noctalia-greeter-session || true)"
+    NOCTALIA_SESSION="$(command -v noctalia-greeter-session || true)"
 
-if [[ -z "$NOCTALIA_SESSION" ]]; then
-    die "noctalia-greeter-session was not installed correctly."
-fi
+    if [[ -z "$NOCTALIA_SESSION" ]]; then
+        die "noctalia-greeter-session was not installed correctly."
+    fi
 
-mkdir -p "/etc/greetd"
+    mkdir -p "/etc/greetd"
 
-cat > "$GREETD_CONFIG" <<EOF
+    cat > "$GREETD_CONFIG" <<EOF
 [terminal]
 vt = 1
 
@@ -489,23 +494,24 @@ command = "$NOCTALIA_SESSION"
 user = "$GREETER_USER"
 EOF
 
-if [[ -x /usr/share/noctalia-greeter/setup_greetd_pam.sh ]]; then
-    /usr/share/noctalia-greeter/setup_greetd_pam.sh || \
-        warn "Noctalia PAM setup returned an error."
-fi
-
-if systemctl list-unit-files sddm.service --no-legend 2>/dev/null | grep -q '^sddm\.service'; then
-    log "Disabling SDDM before enabling greetd"
-    systemctl disable sddm
-
-    if systemctl is-active --quiet sddm; then
-        warn "SDDM is currently active and will remain running until reboot."
-        warn "Do not start greetd manually from this graphical session."
+    if [[ -x /usr/share/noctalia-greeter/setup_greetd_pam.sh ]]; then
+        /usr/share/noctalia-greeter/setup_greetd_pam.sh || \
+            warn "Noctalia PAM setup returned an error."
     fi
-fi
 
-systemctl enable greetd
-systemctl set-default graphical.target
+    if systemctl list-unit-files sddm.service --no-legend 2>/dev/null | grep -q '^sddm\.service'; then
+        log "Disabling SDDM before enabling greetd"
+        systemctl disable sddm
+
+        if systemctl is-active --quiet sddm; then
+            warn "SDDM is currently active and will remain running until reboot."
+            warn "Do not start greetd manually from this graphical session."
+        fi
+    fi
+
+    systemctl enable greetd
+    systemctl set-default graphical.target
+fi
 
 cat <<EOF
 
