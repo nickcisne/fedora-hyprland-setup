@@ -276,7 +276,6 @@ dnf install -y \
     qt6-qtbase \
     qt6-qtwebsockets \
     qt6ct \
-    adw-gtk-theme \
     adw-gtk3-theme \
     adwaita-icon-theme \
     google-noto-emoji-fonts \
