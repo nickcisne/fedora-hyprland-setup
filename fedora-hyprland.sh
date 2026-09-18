@@ -4,6 +4,7 @@ set -Eeuo pipefail
 
 HYPRLAND_COPR="lionheartp/Hyprland"
 NWG_SHELL_COPR="tofik/nwg-shell"
+GHOSTTY_COPR="scottames/ghostty"
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
@@ -91,7 +92,7 @@ System:
 
 This script will:
   - update Fedora
-    - enable the Hyprland COPR and restricted Terra repository
+    - enable the Hyprland, nwg-shell, and Ghostty COPRs plus restricted Terra repository
   - install the workstation software listed above
   - back up the existing ~/.config directory
   - install the repository configuration
@@ -145,6 +146,10 @@ dnf -y copr enable "$HYPRLAND_COPR"
 log "Enabling nwg-shell COPR"
 
 dnf -y copr enable "$NWG_SHELL_COPR"
+
+log "Enabling Ghostty COPR"
+
+dnf -y copr enable "$GHOSTTY_COPR"
 
 log "Installing Flatpak"
 

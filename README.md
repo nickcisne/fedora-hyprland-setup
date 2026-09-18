@@ -47,6 +47,7 @@ The script uses the following external package sources because the required Fedo
 
 - `lionheartp/Hyprland` COPR for the Hyprland package stack
 - `tofik/nwg-shell` COPR for nwg-look and nwg-displays
+- `scottames/ghostty` COPR for Ghostty
 - Terra for Noctalia Shell and Noctalia Greeter
 - RPM Fusion Free and Nonfree for multimedia support
 - Microsoft's signed repository for Visual Studio Code
@@ -100,7 +101,7 @@ sudo reboot
 The installer:
 
 1. Updates Fedora with `dnf upgrade`.
-2. Installs RPM Fusion and enables the Hyprland and nwg-shell COPRs.
+2. Installs RPM Fusion and enables the Hyprland, nwg-shell, and Ghostty COPRs.
 3. Registers Flatpak and installs the restricted Terra repository for Noctalia Shell and Greeter.
 4. Installs the workstation packages listed above.
 5. Creates a timestamped backup of the user's existing `~/.config` directory.
