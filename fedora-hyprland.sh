@@ -3,6 +3,7 @@
 set -Eeuo pipefail
 
 HYPRLAND_COPR="lionheartp/Hyprland"
+NWG_SHELL_COPR="tofik/nwg-shell"
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
@@ -138,6 +139,10 @@ dnf install -y \
 log "Enabling Hyprland COPR"
 
 dnf -y copr enable "$HYPRLAND_COPR"
+
+log "Enabling nwg-shell COPR"
+
+dnf -y copr enable "$NWG_SHELL_COPR"
 
 log "Installing Flatpak"
 
