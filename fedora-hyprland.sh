@@ -4,7 +4,6 @@ set -Eeuo pipefail
 
 HYPRLAND_COPR="lionheartp/Hyprland"
 NWG_SHELL_COPR="tofik/nwg-shell"
-GHOSTTY_COPR="scottames/ghostty"
 LAZYGIT_COPR="atim/lazygit"
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
@@ -74,11 +73,11 @@ Desktop:
   Hyprland, Noctalia Shell, Noctalia Greeter, greetd
 
 Terminal:
-  Ghostty, Fish, Starship, tmux, btop, cmatrix, cava
+    Kitty, Fish, Starship, tmux, btop, cmatrix, cava
   fzf, ripgrep, fd, jq, tree, lazygit
 
 File management:
-  Thunar, GVFS, Tumbler, File Roller, Yazi
+  Thunar, GVFS, Tumbler, File Roller
 
 Browser:
   Chromium
@@ -93,11 +92,11 @@ System:
 
 This script will:
   - update Fedora
-    - enable the Hyprland, nwg-shell, and Ghostty COPRs plus restricted Terra repository
+    - enable the Hyprland and nwg-shell COPRs plus restricted Terra repository
   - install the workstation software listed above
   - back up the existing ~/.config directory
   - install the repository configuration
-  - configure Fish, Starship, Yazi, Thunar, and greetd
+    - configure Fish, Starship, Thunar, and greetd
   - set graphical.target as the default boot target
 
 ===============================================================================
@@ -147,10 +146,6 @@ dnf -y copr enable "$HYPRLAND_COPR"
 log "Enabling nwg-shell COPR"
 
 dnf -y copr enable "$NWG_SHELL_COPR"
-
-log "Enabling Ghostty COPR"
-
-dnf -y copr enable "$GHOSTTY_COPR"
 
 log "Enabling lazygit COPR"
 
@@ -225,7 +220,7 @@ dnf install -y \
 log "Installing terminal environment"
 
 dnf install -y \
-    ghostty \
+    kitty \
     fish \
     fastfetch \
     cava \
@@ -238,12 +233,6 @@ dnf install -y \
     jq \
     tree \
     lazygit
-
-log "Installing Yazi"
-
-dnf install -y \
-    yazi \
-    --setopt=install_weak_deps=False
 
 log "Installing development tools"
 
@@ -393,32 +382,6 @@ EOF
         "$FISH_CONFIG"
 fi
 
-log "Configuring Yazi"
-
-YAZI_FISH_DIR="$ACTUAL_USER_HOME/.config/fish/functions"
-YAZI_FISH="$YAZI_FISH_DIR/yazi.fish"
-
-mkdir -p "$YAZI_FISH_DIR"
-
-if [[ ! -f "$YAZI_FISH" ]]; then
-    cat > "$YAZI_FISH" <<'EOF'
-function yazi
-    set -l tmp (mktemp -t "yazi-cwd.XXXXXX")
-    command yazi $argv --cwd-file="$tmp"
-
-    if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
-        builtin cd -- "$cwd"
-    end
-
-    rm -f -- "$tmp"
-end
-EOF
-
-    chown \
-        "$ACTUAL_USER:$ACTUAL_USER" \
-        "$YAZI_FISH"
-fi
-
 log "Setting Thunar as directory handler"
 
 run_as_user \
@@ -538,12 +501,10 @@ Installed:
   Hyprland
     Noctalia Shell and Greeter
   greetd
-  Ghostty
   Fish
   Starship
   Chromium
   Thunar
-  Yazi
   VS Code
   Git
   Clang

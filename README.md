@@ -18,10 +18,9 @@ Some of the selected packages and included configurations add a bit of **rice** 
 
 ### Applications and terminal tools
 
-- Ghostty, Fish, Starship, tmux, btop, CMatrix, Cava, and Fastfetch
+- Kitty, Fish, Starship, tmux, btop, CMatrix, Cava, and Fastfetch
 - Wofi application launcher
 - Thunar with GVFS, archive, thumbnail, media-tag, and device support
-- Yazi
 - Chromium and Visual Studio Code
 - Git, Git LFS, OpenSSH server, lazygit, fzf, ripgrep, fd, jq, and tree
 
@@ -47,14 +46,13 @@ The script uses the following external package sources because the required Fedo
 
 - `lionheartp/Hyprland` COPR for the Hyprland package stack
 - `tofik/nwg-shell` COPR for nwg-look and nwg-displays
-- `scottames/ghostty` COPR for Ghostty
 - `atim/lazygit` COPR for lazygit
 - Terra for Noctalia Shell and Noctalia Greeter
 - RPM Fusion Free and Nonfree for multimedia support
 - Microsoft's signed repository for Visual Studio Code
 - Flathub is registered for optional Flatpak use, but this script does not install Flatpak applications
 
-The script does not enable the `wl-clip-persist` or Yazi COPRs. Clipboard history uses Fedora packages instead. Terra is restricted to packages matching `noctalia*` after installation. Review and trust these repositories before running the script.
+Clipboard history uses Fedora packages. Terra is restricted to packages matching `noctalia*` after installation. Review and trust these repositories before running the script.
 
 ## Requirements
 
@@ -102,7 +100,7 @@ sudo reboot
 The installer:
 
 1. Updates Fedora with `dnf upgrade`.
-2. Installs RPM Fusion and enables the Hyprland, nwg-shell, Ghostty, and lazygit COPRs.
+2. Installs RPM Fusion and enables the Hyprland, nwg-shell, and lazygit COPRs.
 3. Registers Flatpak, then installs the restricted Terra repository and Noctalia Shell/Greeter near the end of the package setup.
 4. Installs the workstation packages listed above.
 5. Creates a timestamped backup of the user's existing `~/.config` directory.
@@ -148,7 +146,7 @@ Defines application, window-management, workspace, screenshot, media, volume, an
 
 | Binding | Action |
 | --- | --- |
-| `Super+Enter` | Open Ghostty |
+| `Super+Enter` | Open Kitty |
 | `Super+E` | Open Thunar |
 | `Super+C` | Open VS Code |
 | `Super+B` | Open Chromium |

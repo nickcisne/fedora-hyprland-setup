@@ -6,7 +6,7 @@ local function command(command_text)
     return hl.dsp.exec_cmd(command_text)
 end
 
-hl.bind(main_mod .. " + RETURN", command("ghostty"), { description = "Terminal" })
+hl.bind(main_mod .. " + RETURN", command("kitty"), { description = "Terminal" })
 hl.bind(main_mod .. " + E", command("thunar"), { description = "File manager" })
 hl.bind(main_mod .. " + C", command("code"), { description = "Code editor" })
 hl.bind(main_mod .. " + B", command("chromium"), { description = "Browser" })
