@@ -124,7 +124,7 @@ The installer:
 11. Enables the SSH server for inbound remote connections.
 12. Disables SDDM if it is installed, enables greetd, and sets `graphical.target` as the default boot target.
 
-If `/etc/greetd/config.toml` already exists, the script leaves it untouched and skips greetd configuration, PAM setup, and display-manager changes before continuing with the rest of the installation. It still enables greetd and sets `graphical.target` as the default boot target. It also leaves an active SDDM session running until reboot rather than stopping the display manager underneath the terminal running the installer.
+If `/etc/greetd/config.toml` already exists, the script asks whether it should overwrite it with the repository's Noctalia session configuration. Choosing `y` creates a timestamped backup before replacing the file and runs the normal greetd setup. Choosing `N` preserves the existing configuration, skips greetd configuration, PAM setup, and display-manager changes, and still enables greetd and sets `graphical.target` as the default boot target. It also leaves an active SDDM session running until reboot rather than stopping the display manager underneath the terminal running the installer.
 
 ## Repository Structure
 
@@ -193,7 +193,7 @@ Before copying repository configuration, the script creates a directory such as:
 
 The repository configuration is overlaid onto `~/.config`; files that are not present in the repository are not deleted. The script is designed primarily for a fresh installation, but the backup allows recovery if it is run on a system with existing configuration.
 
-Rerunning is supported. If an existing greetd configuration is found, it is treated as user-owned state and preserved; the script skips its configuration and display-manager changes while still enabling greetd and setting `graphical.target` as the default boot target.
+Rerunning is supported. When an existing greetd configuration is found, the installer offers to replace it after creating a timestamped backup. Declining preserves the existing file while still enabling greetd and setting `graphical.target` as the default boot target.
 
 ## Security Notes
 

@@ -106,6 +106,24 @@ EOF
 read -r -p "Continue? [y/N] " ANSWER
 
 case "$ANSWER" in
+    read -r -p "Overwrite the existing greetd configuration with the repository configuration? [y/N] " OVERWRITE_GREETD
+
+    case "$OVERWRITE_GREETD" in
+        y|Y|yes|YES)
+            GREETD_BACKUP="$GREETD_CONFIG.backup-$(date +%Y%m%d-%H%M%S)"
+            cp -a "$GREETD_CONFIG" "$GREETD_BACKUP"
+            echo "Existing greetd configuration backed up to: $GREETD_BACKUP"
+            GREETD_CONFIG_EXISTS=0
+            ;;
+        *)
+            warn "Skipping greetd configuration, PAM setup, and display-manager changes. Existing configuration was preserved."
+            systemctl enable greetd
+            systemctl set-default graphical.target
+            ;;
+    esac
+fi
+
+if [[ "$GREETD_CONFIG_EXISTS" -eq 0 ]]; then
     y|Y|yes|YES) ;;
     *) echo "Aborted."; exit 0 ;;
 esac
