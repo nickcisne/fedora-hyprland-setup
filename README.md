@@ -37,7 +37,7 @@ Some of the selected packages and included configurations add a bit of **rice** 
 - Grim and Slurp for screenshots
 - MPV, Playerctl, PipeWire multimedia plugins, FFmpeg, and Pavucontrol
 - Qt6, qt6ct, Adwaita themes, Matugen, and Cascadia Code NF
-- RPM Fusion multimedia packages
+- RPM Fusion multimedia packages; the multimedia transaction allows DNF to replace conflicting Fedora `*-free` codec packages with RPM Fusion variants
 - lm_sensors, nethogs, cpupower, upower, and power-profiles-daemon
 
 ## External Repositories

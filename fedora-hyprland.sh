@@ -259,6 +259,7 @@ dnf install -y chromium
 log "Installing multimedia support"
 
 dnf install -y \
+    --allowerasing \
     pavucontrol \
     playerctl \
     grim \
