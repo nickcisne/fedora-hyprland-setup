@@ -5,6 +5,7 @@ set -Eeuo pipefail
 HYPRLAND_COPR="lionheartp/Hyprland"
 NWG_SHELL_COPR="tofik/nwg-shell"
 GHOSTTY_COPR="scottames/ghostty"
+LAZYGIT_COPR="atim/lazygit"
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
@@ -150,6 +151,10 @@ dnf -y copr enable "$NWG_SHELL_COPR"
 log "Enabling Ghostty COPR"
 
 dnf -y copr enable "$GHOSTTY_COPR"
+
+log "Enabling lazygit COPR"
+
+dnf -y copr enable "$LAZYGIT_COPR"
 
 log "Installing Flatpak"
 
