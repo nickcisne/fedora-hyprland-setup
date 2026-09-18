@@ -265,9 +265,9 @@ dnf install -y \
     grim \
     slurp \
     mpv \
-    gst-plugins-good \
-    gst-plugins-ugly \
-    gst-libav \
+    gstreamer1-plugins-good \
+    gstreamer1-plugins-ugly \
+    gstreamer1-libav \
     ffmpeg
 
 log "Installing fonts, themes and Qt support"
