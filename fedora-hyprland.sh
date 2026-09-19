@@ -190,6 +190,7 @@ dnf install -y \
     accountsservice \
     greetd \
     hyprland \
+    hyprland-guiutils \
     xdg-desktop-portal-hyprland \
     xdg-desktop-portal-gtk \
     xorg-x11-server-Xwayland \

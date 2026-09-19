@@ -10,7 +10,7 @@ Some of the selected packages and included configurations add a bit of **rice** 
 
 ### Desktop and session
 
-- Hyprland and the Hyprland Wayland portal
+- Hyprland, Hyprland GUI utilities, and the Hyprland Wayland portal
 - UWSM, the Universal Wayland Session Manager
 - Noctalia Shell, greetd, and Noctalia Greeter
 - Xwayland, GTK portals, Polkit, AccountsService, and GNOME Keyring
